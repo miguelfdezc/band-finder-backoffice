@@ -14,8 +14,6 @@ Necesitas tener instalado en tu sistema:
 
 ```sh
 npm install
-cp .env.example .env    # Linux
-copy .env.example .env  # Windows
 ```
 
 ## Ejecución
