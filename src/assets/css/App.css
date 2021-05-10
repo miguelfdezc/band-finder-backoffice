@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.clearfix {
+  clear: both;
+  float: none;
+}
+
+.container-fluid {
+  height: calc(100vh - 6rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
