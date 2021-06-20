@@ -1,36 +1,56 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { auth } from '../config';
 
-class Header extends Component {
-  render() {
-    return (
-      <nav className='navbar navbar-expand-lg navbar-dark bg-primary'>
-        <NavLink className='navbar-brand' to='/'>
-          Band Finder Example
-        </NavLink>
-        <button
-          className='navbar-toggler'
-          type='button'
-          data-toggle='collapse'
-          data-target='#navbarNavDropdown'
-          aria-controls='navbarNavDropdown'
-          aria-expanded='false'
-          aria-label='Toggle navigation'
-        >
-          <span className='navbar-toggler-icon'></span>
-        </button>
-        <div className='collapse navbar-collapse' id='navbarNavDropdown'>
-          <ul className='navbar-nav ml-auto'>
-            <li className='nav-item'>
-              <NavLink className='nav-link' to='/' activeClassName='active'>
-                Example
-              </NavLink>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    );
+function Header() {
+  const history = useHistory();
+  const [isLogged, setIsLogged] = useState(auth.currentUser);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      setIsLogged(!isLogged)
+    });
+
+    return unsubscribe;
+  }, [isLogged]);
+
+  const signOut = async () => {
+    await auth
+      .signOut()
+      .then(() => history.push('/login'))
+      .catch((error) => {
+        alert(error.message);
+      })
   }
+
+  return (
+    <nav className='navbar navbar-expand-lg navbar-dark bg-primary'>
+      <NavLink className='navbar-brand' to='/'>
+        Band Finder Backoffice
+      </NavLink>
+      {auth.currentUser && <button
+        className='navbar-toggler'
+        type='button'
+        data-toggle='collapse'
+        data-target='#navbarNavDropdown'
+        aria-controls='navbarNavDropdown'
+        aria-expanded='false'
+        aria-label='Toggle navigation'
+      >
+        <span className='navbar-toggler-icon'></span>
+      </button>}
+      {auth.currentUser && <div className='collapse navbar-collapse' id='navbarNavDropdown'>
+        <ul className='navbar-nav ml-auto'>
+          <li className='nav-item'>
+            <div className='nav-link' style={{cursor: 'pointer'}} onClick={signOut}>
+              Cerrar sesión
+            </div>
+          </li>
+        </ul>
+      </div>}
+    </nav>
+  );
 }
 
 export default Header;
