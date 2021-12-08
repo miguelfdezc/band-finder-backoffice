@@ -9,7 +9,7 @@ function Header() {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      setIsLogged(!isLogged)
+      setIsLogged(!isLogged);
     });
 
     return unsubscribe;
@@ -21,34 +21,53 @@ function Header() {
       .then(() => history.push('/login'))
       .catch((error) => {
         alert(error.message);
-      })
-  }
+      });
+  };
 
   return (
     <nav className='navbar navbar-expand-lg navbar-dark bg-primary'>
       <NavLink className='navbar-brand' to='/'>
         Band Finder Backoffice
       </NavLink>
-      {auth.currentUser && <button
-        className='navbar-toggler'
-        type='button'
-        data-toggle='collapse'
-        data-target='#navbarNavDropdown'
-        aria-controls='navbarNavDropdown'
-        aria-expanded='false'
-        aria-label='Toggle navigation'
-      >
-        <span className='navbar-toggler-icon'></span>
-      </button>}
-      {auth.currentUser && <div className='collapse navbar-collapse' id='navbarNavDropdown'>
-        <ul className='navbar-nav ml-auto'>
-          <li className='nav-item'>
-            <div className='nav-link' style={{cursor: 'pointer'}} onClick={signOut}>
-              Cerrar sesión
-            </div>
-          </li>
-        </ul>
-      </div>}
+      {auth.currentUser && (
+        <button
+          className='navbar-toggler'
+          type='button'
+          data-toggle='collapse'
+          data-target='#navbarNavDropdown'
+          aria-controls='navbarNavDropdown'
+          aria-expanded='false'
+          aria-label='Toggle navigation'
+        >
+          <span className='navbar-toggler-icon'></span>
+        </button>
+      )}
+      {auth.currentUser && (
+        <div className='collapse navbar-collapse' id='navbarNavDropdown'>
+          <ul className='navbar-nav ml-auto'>
+            <li className='nav-item'>
+              <div
+                className='nav-link'
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  history.push('/');
+                }}
+              >
+                Músicos
+              </div>
+            </li>
+            <li className='nav-item'>
+              <div
+                className='nav-link'
+                style={{ cursor: 'pointer' }}
+                onClick={signOut}
+              >
+                Cerrar sesión
+              </div>
+            </li>
+          </ul>
+        </div>
+      )}
     </nav>
   );
 }

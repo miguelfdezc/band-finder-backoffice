@@ -1,0 +1,32 @@
+.musician thead,
+.musician tbody,
+.musician tr,
+.musician td,
+.musician th {
+  display: block;
+}
+
+.musician tbody {
+  height: 300px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.musician tbody td,
+.musician tbody th,
+.musician thead > tr > th {
+  float: left;
+  position: relative;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.musician tbody td ::after,
+.musician tbody th ::after,
+.musician thead > tr > th ::after {
+  content: '';
+  clear: both;
+  display: block;
+}
