@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { firebase, storage } from '../config';
-import Global from '../Global';
+import { firebase, storage } from '../../config';
+import Global from '../../Global';
 import axios from 'axios';
 import { useParams } from 'react-router';
 import { useSelector } from 'react-redux';

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import 'moment/locale/es';
-import Global from '../Global';
+import Global from '../../Global';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../assets/css/musicians.css';
+import '../../assets/css/musicians.css';
 // import Pagination from 'react-bootstrap/Pagination';
 import { useSelector } from 'react-redux';
 
-export default function Musicians() {
+export default function Busineses() {
   let url = Global.url;
 
   const authUser = useSelector((state) => state.auth.authUser);
@@ -17,9 +17,8 @@ export default function Musicians() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    console.log('authUser:', authUser);
     axios
-      .get(`${url}/users/collection/musicos?uid=${authUser}`)
+      .get(`${url}/users/collection/negocios?uid=${authUser}`)
       .then((response) => {
         setUsers(response.data.users);
       })
@@ -30,7 +29,7 @@ export default function Musicians() {
     // eslint-disable-next-line
   }, []);
 
-  const deleteMusician = (id) => {
+  const deleteBusiness = (id) => {
     axios
       .delete(`${url}/users/${id}?uid=${authUser}`)
       .then((response) => {
@@ -48,10 +47,10 @@ export default function Musicians() {
         <div className='container' style={{ height: 'calc(100vh - 120px)' }}>
           <div className='row mt-3'>
             <div className='col-11'>
-              <h2>Listado de usuarios</h2>
+              <h2>Listado de negocios</h2>
             </div>
             <div className='col-1'>
-              <Link to='/musician' className='btn btn-success'>
+              <Link to='/business' className='btn btn-success'>
                 Crear
               </Link>
             </div>
@@ -80,7 +79,7 @@ export default function Musicians() {
                       <td className='col-2'>{user.usuario}</td>
                       <td className='col-1'>
                         <Link
-                          to={`/musician/${user.uid}`}
+                          to={`/business/${user.uid}`}
                           style={{ color: '#17a2b8' }}
                         >
                           Ver
@@ -88,7 +87,7 @@ export default function Musicians() {
                       </td>
                       <td className='col-1'>
                         <Link
-                          to={`/musician/edit/${user.uid}`}
+                          to={`/business/edit/${user.uid}`}
                           style={{ color: '#ffc107' }}
                         >
                           Editar
@@ -97,7 +96,7 @@ export default function Musicians() {
                       <td className='col-1'>
                         <span
                           className='text-danger'
-                          onClick={() => deleteMusician(user.uid)}
+                          onClick={() => deleteBusiness(user.uid)}
                         >
                           Eliminar
                         </span>

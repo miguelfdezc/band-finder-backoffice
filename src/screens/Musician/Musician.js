@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'moment/locale/es';
-import Global from '../Global';
+import Global from '../../Global';
 import axios from 'axios';
 import { useParams, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -90,7 +90,7 @@ export default function Musician() {
                   </tr>
                   <tr>
                     <th>Nombre</th>
-                    <td>{user.displayName}</td>
+                    <td>{user.displayName ?? '-'}</td>
                     <th>Grupo</th>
                     <td>{user.customClaims.type}</td>
                   </tr>
@@ -110,7 +110,13 @@ export default function Musician() {
                     <th>Usuario</th>
                     <td>{user.usuario}</td>
                     <th>Imagen Fondo</th>
-                    <td>{user.imagenFondo === '' ? '-' : user.imagenFondo}</td>
+                    <td>
+                      {user.imagenFondo === '' ? (
+                        '-'
+                      ) : (
+                        <a href={user.imagenFondo}>{user.imagenFondo}</a>
+                      )}
+                    </td>
                   </tr>
                   <tr>
                     <th>Actuaciones</th>

@@ -60,6 +60,17 @@ function Header() {
               <div
                 className='nav-link'
                 style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  history.push('/businesses');
+                }}
+              >
+                Negocios
+              </div>
+            </li>
+            <li className='nav-item'>
+              <div
+                className='nav-link'
+                style={{ cursor: 'pointer' }}
                 onClick={signOut}
               >
                 Cerrar sesión
