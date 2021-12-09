@@ -28,3 +28,8 @@ code {
 .center {
   text-align: center;
 }
+
+span.text-danger:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { auth } from '../config';
 import Global from '../Global';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { loginAction } from '../store/actions';
 
 export default function Login() {
   const url = Global.url;
+  const dispatch = useDispatch();
   const history = useHistory();
 
   const [email, setEmail] = useState('');
@@ -22,15 +24,17 @@ export default function Login() {
 
   const signIn = async (e) => {
     try {
-      e.preventDefault()
+      e.preventDefault();
       if (validateForm()) {
-        const isAdmin = await (await axios.post(`${url}/permisos/admin`, { email })).data.isAdmin
-        console.log(isAdmin);
-        if (isAdmin) await auth.signInWithEmailAndPassword(email, password).then(() => history.push('/'));
-        else setError('Forbidden: el usuario no tiene permisos de administrador')
+        const isAdmin = await (
+          await axios.post(`${url}/auth/admin`, { email })
+        ).data.isAdmin;
+        if (isAdmin) dispatch(loginAction(email, password, history));
+        else
+          setError('Forbidden: el usuario no tiene permisos de administrador');
       }
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     }
   };
 
@@ -45,7 +49,9 @@ export default function Login() {
         <div className='col-auto'>
           <form onSubmit={signIn}>
             <div className='form-group'>
-              <label htmlFor='email' className=''>Email</label>
+              <label htmlFor='email' className=''>
+                Email
+              </label>
               <input
                 id='email'
                 className='form-control'
@@ -70,7 +76,11 @@ export default function Login() {
                 required
               />
             </div>
-            <button type='submit' className='btn btn-primary btn-block' onClick={signIn}>
+            <button
+              type='submit'
+              className='btn btn-primary btn-block'
+              onClick={signIn}
+            >
               Login
             </button>
           </form>
