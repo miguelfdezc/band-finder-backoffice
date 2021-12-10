@@ -6,7 +6,7 @@ import { useParams, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-export default function Musician() {
+export default function Post() {
   let url = Global.url;
 
   const history = useHistory();
@@ -14,15 +14,16 @@ export default function Musician() {
   const authUser = useSelector((state) => state.auth.authUser);
 
   const [message, setMessage] = useState('');
-  const [user, setUser] = useState(null);
+  const [post, setPost] = useState(null);
 
   const { id } = useParams();
 
   useEffect(() => {
     axios
-      .get(`${url}/users/${id}?uid=${authUser}`)
+      .get(`${url}/posts/${id}`)
       .then((response) => {
-        setUser(response.data.user);
+        console.log('POST:', response.data.post);
+        setPost(response.data.post);
       })
       .catch((error) => {
         setMessage(error.response.data.message);
@@ -30,9 +31,9 @@ export default function Musician() {
     // eslint-disable-next-line
   }, [id, url]);
 
-  const deleteMusician = (id) => {
+  const deletePost = (id) => {
     axios
-      .delete(`${url}/users/${id}?uid=${authUser}`)
+      .delete(`${url}/posts/${id}?uid=${authUser}`)
       .then((response) => {
         setMessage(response.data.message);
       })
@@ -43,15 +44,15 @@ export default function Musician() {
 
   return (
     <div className='container'>
-      {user && (
+      {post && (
         <>
           <div className='row mt-3'>
             <div className='col-10'>
-              <h2>Músic@: {user.usuario}</h2>
+              <h2>Publicación</h2>
             </div>
             <div className='col-2'>
               <Link
-                to={`/musician/edit/${user.uid}`}
+                to={`/post/edit/${post.id}`}
                 className='btn btn-warning m-1'
               >
                 Editar
@@ -59,7 +60,7 @@ export default function Musician() {
               <button
                 className='btn btn-danger'
                 onClick={() => {
-                  deleteMusician(user.uid);
+                  deletePost(post.id);
                   history.goBack();
                 }}
               >
@@ -73,60 +74,32 @@ export default function Musician() {
               <table className='table table-striped'>
                 <tbody>
                   <tr>
-                    <th>UID</th>
-                    <td>{user.uid}</td>
-                    <th>Email</th>
-                    <td>{user.email}</td>
-                  </tr>
-                  <tr>
-                    <th>Verificado</th>
-                    <td>{user.emailVerified ? 'Sí' : 'No'}</td>
-                    <th>PhotoURL</th>
-                    <td>
-                      <a href={user.photoURL}>{user.photoURL}</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Nombre</th>
-                    <td>{user.displayName ?? '-'}</td>
-                    <th>Grupo</th>
-                    <td>{user.customClaims.type}</td>
-                  </tr>
-                  <tr>
-                    <th>Bloqueado</th>
-                    <td>{user.disabled ? 'Sí' : 'No'}</td>
-                    <th>Fecha de creación</th>
-                    <td>{user.metadata.creationTime}</td>
-                  </tr>
-                  <tr>
-                    <th>Último Inicio de sesión</th>
-                    <td>{user.metadata.lastSignInTime ?? '-'}</td>
-                    <th>Descripción</th>
-                    <td>{user.descripcion === '' ? '-' : user.descripcion}</td>
-                  </tr>
-                  <tr>
+                    <th>ID</th>
+                    <td>{post.id}</td>
                     <th>Usuario</th>
-                    <td>{user.usuario}</td>
-                    <th>Imagen Fondo</th>
                     <td>
-                      {user.imagenFondo === '' ? (
-                        '-'
-                      ) : (
-                        <a href={user.imagenFondo}>{user.imagenFondo}</a>
-                      )}
+                      <Link to={`/musician/${post.usuario}`}>
+                        {post.usuario}
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <th>Actuaciones</th>
-                    <td>{user.actuaciones}</td>
-                    <th>Ubicación</th>
-                    <td>{user.ubicacion === '' ? '-' : user.ubicacion}</td>
+                    <th>Compartido</th>
+                    <td>{post.shared}</td>
+                    <th>{post.video.length > 0 ? 'Video' : 'Imagen'}</th>
+                    <td>
+                      <a
+                        href={post.video.length > 0 ? post.video : post.imagen}
+                      >
+                        {post.video.length > 0 ? post.video : post.imagen}
+                      </a>
+                    </td>
                   </tr>
                   <tr>
-                    <th>Valoración</th>
-                    <td>{user.valoracion}</td>
-                    <th>Fans</th>
-                    <td>{user.fans}</td>
+                    <th>Me gusta</th>
+                    <td>{post.likes.length > 0 ? post.likes.length : 0}</td>
+                    <th>Comentarios</th>
+                    <td>{post.comentarios.length}</td>
                   </tr>
                 </tbody>
               </table>

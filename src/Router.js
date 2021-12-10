@@ -12,6 +12,9 @@ import ManageMusician from './screens/Musician/ManageMusician';
 import Businesses from './screens/Business/Businesses';
 import Business from './screens/Business/Business';
 import ManageBusiness from './screens/Business/ManageBusiness';
+import Posts from './screens/Post/Posts';
+import Post from './screens/Post/Post';
+import ManagePost from './screens/Post/ManagePost';
 
 export default function Router() {
   return (
@@ -62,6 +65,15 @@ export default function Router() {
           exact
           path='/business/edit/:id'
           component={ManageBusiness}
+          type='private'
+        />
+        <AuthRoute exact path='/posts' component={Posts} type='private' />
+        <AuthRoute exact path='/post' component={ManagePost} type='private' />
+        <AuthRoute exact path='/post/:id' component={Post} type='private' />
+        <AuthRoute
+          exact
+          path='/post/edit/:id'
+          component={ManagePost}
           type='private'
         />
 
