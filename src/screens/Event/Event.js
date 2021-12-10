@@ -6,6 +6,7 @@ import { useParams, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import { firebase } from '../../config';
 
 export default function Event() {
   let url = Global.url;
@@ -128,10 +129,13 @@ export default function Event() {
                     <td colSpan='3'>
                       {event.fechas.map((fecha, index) => (
                         <span key={index}>
-                          {moment(fecha).format('DD')}{' '}
-                          {moment(fecha).format('MMM')}{' '}
-                          {moment(fecha).format('YYYY')}
-                          {index !== event.fechas.length - 1 ? ',' : '.'}
+                          {moment(
+                            Math.round(
+                              fecha['_seconds'] +
+                                fecha['_nanoseconds'] / 1000000000
+                            ) * 1000
+                          ).format('DD/MM/YYYY')}
+                          {index !== event.fechas.length - 1 ? ', ' : '.'}
                         </span>
                       ))}
                     </td>
