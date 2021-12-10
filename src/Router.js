@@ -15,6 +15,7 @@ import ManageBusiness from './screens/Business/ManageBusiness';
 import Posts from './screens/Post/Posts';
 import Post from './screens/Post/Post';
 import ManagePost from './screens/Post/ManagePost';
+import Events from './screens/Event/Events';
 
 export default function Router() {
   return (
@@ -76,6 +77,7 @@ export default function Router() {
           component={ManagePost}
           type='private'
         />
+        <AuthRoute exact path='/events' component={Events} type='private' />
 
         <Route component={Error} />
       </Switch>
