@@ -18,6 +18,7 @@ import ManagePost from './screens/Post/ManagePost';
 import Events from './screens/Event/Events';
 import Event from './screens/Event/Event';
 import ManageEvent from './screens/Event/ManageEvent';
+import Bands from './screens/Band/Bands';
 
 export default function Router() {
   return (
@@ -88,6 +89,7 @@ export default function Router() {
           component={ManageEvent}
           type='private'
         />
+        <AuthRoute exact path='/bands' component={Bands} type='private' />
 
         <Route component={Error} />
       </Switch>
