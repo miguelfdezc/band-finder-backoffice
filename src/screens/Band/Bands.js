@@ -7,7 +7,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../assets/css/musicians.css';
 // import Pagination from 'react-bootstrap/Pagination';
 import { useSelector } from 'react-redux';
-import moment from 'moment';
 
 export default function Bands() {
   let url = Global.url;
@@ -64,9 +63,9 @@ export default function Bands() {
                 <thead>
                   <tr>
                     <th className='col-2'>ID</th>
-                    <th className='col-3'>Usuario</th>
+                    <th className='col-3'>Fundador</th>
+                    <th className='col-1'>Nombre</th>
                     <th className='col-1'>Valoración</th>
-                    <th className='col-1'>Fans</th>
                     <th className='col-1'>Miembros</th>
                     <th className='col-1'>Actuaciones</th>
                     <th className='col-3' colSpan='3'>
@@ -83,8 +82,8 @@ export default function Bands() {
                           {band.fundador.usuario}
                         </Link>
                       </td>
+                      <td className='col-1'>{band.nombre}</td>
                       <td className='col-1'>{band.valoracion}</td>
-                      <td className='col-1'>{band.fans}</td>
                       <td className='col-1'>{band.miembros.length}</td>
                       <td className='col-1'>{band.actuaciones}</td>
                       <td className='col-1'>
