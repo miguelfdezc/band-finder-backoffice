@@ -15,6 +15,9 @@ import ManageBusiness from './screens/Business/ManageBusiness';
 import Posts from './screens/Post/Posts';
 import Post from './screens/Post/Post';
 import ManagePost from './screens/Post/ManagePost';
+import Events from './screens/Event/Events';
+import Event from './screens/Event/Event';
+import ManageEvent from './screens/Event/ManageEvent';
 
 export default function Router() {
   return (
@@ -74,6 +77,15 @@ export default function Router() {
           exact
           path='/post/edit/:id'
           component={ManagePost}
+          type='private'
+        />
+        <AuthRoute exact path='/events' component={Events} type='private' />
+        <AuthRoute exact path='/event' component={ManageEvent} type='private' />
+        <AuthRoute exact path='/event/:id' component={Event} type='private' />
+        <AuthRoute
+          exact
+          path='/event/edit/:id'
+          component={ManageEvent}
           type='private'
         />
 
