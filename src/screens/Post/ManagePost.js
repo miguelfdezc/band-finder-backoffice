@@ -48,6 +48,7 @@ export default function ManagePost() {
         setPost({ ...post, usuario: users[0].uid });
       }
     }
+    // eslint-disable-next-line
   }, [users]);
 
   const handleChange = (e, type) => {
@@ -94,7 +95,7 @@ export default function ManagePost() {
                   Usuario
                 </label>
                 <select
-                  className='form-select'
+                  className='form-control'
                   aria-label='usuario'
                   onChange={(e) =>
                     setPost({ ...post, usuario: e.target.value })

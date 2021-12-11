@@ -6,7 +6,6 @@ import { useParams, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { firebase } from '../../config';
 
 export default function Event() {
   let url = Global.url;
