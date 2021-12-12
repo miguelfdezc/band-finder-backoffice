@@ -88,7 +88,9 @@ export default function Event() {
                     <td>{event.titulo}</td>
                     <th>Imagen</th>
                     <td>
-                      <a href={event.imagen}>{event.imagen}</a>
+                      <a href={event.imagen} target='_blank' rel='noreferrer'>
+                        {event.imagen}
+                      </a>
                     </td>
                   </tr>
                   <tr>

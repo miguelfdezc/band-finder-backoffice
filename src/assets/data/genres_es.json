@@ -1,0 +1,22 @@
+{
+  "genres": [
+    { "title": "Folk", "key": "folk" },
+    { "title": "Latino", "key": "latin" },
+    { "title": "Estudio", "key": "stage-and-screen" },
+    { "title": "Rap", "key": "rap" },
+    { "title": "Jazz", "key": "jazz" },
+    { "title": "Reggae", "key": "reggae" },
+    { "title": "Soul", "key": "soul" },
+    { "title": "Rock", "key": "rock" },
+    { "title": "Clásica", "key": "classical" },
+    { "title": "Pop", "key": "pop" },
+    { "title": "World", "key": "world" },
+    { "title": "Blues", "key": "blues" },
+    { "title": "Metal", "key": "metal" },
+    { "title": "Electrónica", "key": "electronic" },
+    { "title": "Funk", "key": "funk" },
+    { "title": "No Musical", "key": "non-musical" },
+    { "title": "Hip Hop", "key": "hip-hop" },
+    { "title": "Country", "key": "country" }
+  ]
+}

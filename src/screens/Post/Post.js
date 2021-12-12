@@ -22,7 +22,6 @@ export default function Post() {
     axios
       .get(`${url}/posts/${id}`)
       .then((response) => {
-        console.log('POST:', response.data.post);
         setPost(response.data.post);
       })
       .catch((error) => {

@@ -83,7 +83,9 @@ export default function Musician() {
                     <td>{user.emailVerified ? 'Sí' : 'No'}</td>
                     <th>PhotoURL</th>
                     <td>
-                      <a href={user.photoURL}>{user.photoURL}</a>
+                      <a href={user.photoURL} target='_blank' rel='noreferrer'>
+                        {user.photoURL}
+                      </a>
                     </td>
                   </tr>
                   <tr>
@@ -112,7 +114,13 @@ export default function Musician() {
                       {user.imagenFondo === '' ? (
                         '-'
                       ) : (
-                        <a href={user.imagenFondo}>{user.imagenFondo}</a>
+                        <a
+                          href={user.imagenFondo}
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          {user.imagenFondo}
+                        </a>
                       )}
                     </td>
                   </tr>
@@ -124,7 +132,7 @@ export default function Musician() {
                   </tr>
                   <tr>
                     <th>Valoración</th>
-                    <td>{user.valoracion}</td>
+                    <td>{user.valoracion} / 5</td>
                     <th>Fans</th>
                     <td>{user.fans}</td>
                   </tr>

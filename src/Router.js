@@ -18,6 +18,9 @@ import ManagePost from './screens/Post/ManagePost';
 import Events from './screens/Event/Events';
 import Event from './screens/Event/Event';
 import ManageEvent from './screens/Event/ManageEvent';
+import Bands from './screens/Band/Bands';
+import Band from './screens/Band/Band';
+import ManageBand from './screens/Band/ManageBand';
 
 export default function Router() {
   return (
@@ -86,6 +89,15 @@ export default function Router() {
           exact
           path='/event/edit/:id'
           component={ManageEvent}
+          type='private'
+        />
+        <AuthRoute exact path='/bands' component={Bands} type='private' />
+        <AuthRoute exact path='/band' component={ManageBand} type='private' />
+        <AuthRoute exact path='/band/:id' component={Band} type='private' />
+        <AuthRoute
+          exact
+          path='/band/edit/:id'
+          component={ManageBand}
           type='private'
         />
 
