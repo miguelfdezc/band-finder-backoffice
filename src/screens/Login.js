@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Global from '../Global';
 import axios from 'axios';
@@ -20,17 +20,6 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  const emailRegex =
-    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g;
-
-  const validateForm = () => {
-    if (!email || !password) {
-      setError('Error: faltan campos del formulario por rellenar');
-      return false;
-    }
-    return true;
-  };
 
   const onFormSubmit = async () => {
     try {
@@ -87,7 +76,6 @@ export default function Login() {
                 type='text'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
               />
               <small className='text-danger'>
                 {errors.email && errors.email.message}
@@ -104,7 +92,6 @@ export default function Login() {
                 type='password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
               />
               <small className='text-danger'>
                 {errors.password && errors.password.message}
