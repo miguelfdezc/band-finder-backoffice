@@ -1,0 +1,19 @@
+{
+  "instruments": [
+    { "title": "Teclado", "key": "keyboard" },
+    { "title": "Piano", "key": "piano" },
+    { "title": "Flauta dulce", "key": "recorder" },
+    { "title": "Guitarra Clásica", "key": "classical-guitar" },
+    { "title": "Batería", "key": "drum-set" },
+    { "title": "Guitarra Eléctrica", "key": "electric-guitar" },
+    { "title": "Violín", "key": "violin" },
+    { "title": "Percusión", "key": "percussion" },
+    { "title": "Bajo", "key": "bass" },
+    { "title": "Saxofón", "key": "saxophone" },
+    { "title": "Flauta travesera", "key": "flute" },
+    { "title": "Cello", "key": "cello" },
+    { "title": "Clarinete", "key": "clarinet" },
+    { "title": "Trompeta", "key": "trumpet" },
+    { "title": "Arpa", "key": "harp" }
+  ]
+}

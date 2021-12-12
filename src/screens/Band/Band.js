@@ -178,7 +178,6 @@ export default function Band() {
                           <Location
                             lat={band.ubicacion.latitude}
                             lng={band.ubicacion.longitude}
-                            text='My Marker'
                             color={'#ff0000'}
                             title={band.ciudad}
                             height='30px'
