@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useHistory, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import { useForm } from 'react-hook-form';
 
 export default function ManageEvent() {
   const url = Global.url;
@@ -13,11 +14,88 @@ export default function ManageEvent() {
 
   const authUser = useSelector((state) => state.auth.authUser);
 
-  const [event, setEvent] = useState({ imagen: '', tipo: 'puntual' });
+  const [event, setEvent] = useState({
+    imagen: '',
+    tipo: 'puntual',
+    fechaInicio: moment().format('YYYY-MM-DD'),
+    fechaFin: moment().format('YYYY-MM-DD'),
+    horaInicio: moment().toISOString(),
+    horaFin: moment().toISOString(),
+  });
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
 
   const { id } = useParams();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: 'onBlur' });
+
+  const onFormSubmit = async () => {
+    try {
+      if (id) {
+        axios
+          .put(`${url}/events/${id}?uid=${authUser}`, event)
+          .then((response) => {
+            setEvent(response.data.event);
+            history.push('/events');
+          })
+          .catch((error) => {
+            setError(error.message);
+            console.error('Ha habido un error!', error);
+          });
+      } else {
+        axios
+          .post(`${url}/events`, event)
+          .then((response) => {
+            setEvent(response.data.event);
+            history.push('/events');
+          })
+          .catch((error) => {
+            setError(error.message);
+            console.error('Ha habido un error!', error);
+          });
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const onErrors = (errors) => setError(errors.message);
+
+  const registerOptions = {
+    titulo: {
+      required: 'Título es obligatorio',
+      maxLength: {
+        value: 30,
+        message: 'Título debe tener como máximo 30 caracteres',
+      },
+    },
+    ubicacion: {
+      required: 'Ubicación es obligatorio',
+      maxLength: {
+        value: 50,
+        message: 'Ubicación debe tener como máximo 50 caracteres',
+      },
+    },
+    fechaFin: {
+      validate: {
+        greaterThanStart: (value) => {
+          let inicio = new Date(event.fechaInicio);
+          let fin = new Date(value);
+          return fin.getTime() >= inicio.getTime();
+        },
+      },
+    },
+    descripcion: {
+      maxLength: {
+        value: 150,
+        message: 'Descripción debe tener como máximo 150 caracteres',
+      },
+    },
+  };
 
   useEffect(() => {
     axios
@@ -85,7 +163,7 @@ export default function ManageEvent() {
         </div>
       </div>
       {event && (
-        <form onSubmit={() => {}}>
+        <form onSubmit={handleSubmit(onFormSubmit, onErrors)}>
           <div className='row'>
             <div className='col'>
               <div className='form-group'>
@@ -99,7 +177,6 @@ export default function ManageEvent() {
                   onChange={(e) =>
                     setEvent({ ...event, usuario: e.target.value })
                   }
-                  required
                   value={event.usuario}
                 >
                   {users.map((opt, index) => (
@@ -118,7 +195,6 @@ export default function ManageEvent() {
                   className='form-control'
                   aria-label='tipo'
                   onChange={(e) => setEvent({ ...event, tipo: e.target.value })}
-                  required
                   value={event.tipo}
                 >
                   <option value='puntual'>Puntual</option>
@@ -146,16 +222,25 @@ export default function ManageEvent() {
                 <label htmlFor='fechaFin' className=''>
                   Fecha fin
                 </label>
-                <input
-                  id='fechaFin'
-                  className='form-control'
-                  name='fechaFin'
-                  type='date'
-                  value={moment(event.fechaFin).format('YYYY-MM-DD')}
-                  onChange={(e) =>
-                    setEvent({ ...event, fechaFin: e.target.value })
-                  }
-                />
+                {((id && event.fechaInicio && event.fechaInicio.length > 0) ||
+                  !id) && (
+                  <input
+                    id='fechaFin'
+                    {...register('fechaFin', registerOptions.fechaFin)}
+                    className='form-control'
+                    name='fechaFin'
+                    type='date'
+                    min={moment(event.fechaInicio).format('YYYY-MM-DD')}
+                    value={moment(event.fechaFin).format('YYYY-MM-DD')}
+                    onChange={(e) =>
+                      setEvent({ ...event, fechaFin: e.target.value })
+                    }
+                  />
+                )}
+                <small className='text-danger'>
+                  {errors.fechaFin &&
+                    'Fecha fin tiene que ser posterior a fecha inicio'}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='imagen' className=''>
@@ -192,6 +277,7 @@ export default function ManageEvent() {
                 </label>
                 <input
                   id='titulo'
+                  {...register('titulo', registerOptions.titulo)}
                   className='form-control'
                   name='titulo'
                   placeholder='Título del evento...'
@@ -201,6 +287,9 @@ export default function ManageEvent() {
                     setEvent({ ...event, titulo: e.target.value })
                   }
                 />
+                <small className='text-danger'>
+                  {errors.titulo && errors.titulo.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='ubicacion' className=''>
@@ -208,6 +297,7 @@ export default function ManageEvent() {
                 </label>
                 <input
                   id='ubicacion'
+                  {...register('ubicacion', registerOptions.ubicacion)}
                   className='form-control'
                   name='ubicacion'
                   placeholder='Calle, número'
@@ -217,6 +307,9 @@ export default function ManageEvent() {
                     setEvent({ ...event, ubicacion: e.target.value })
                   }
                 />
+                <small className='text-danger'>
+                  {errors.ubicacion && errors.ubicacion.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='horaInicio' className=''>
@@ -229,7 +322,12 @@ export default function ManageEvent() {
                   type='time'
                   value={moment(event.horaInicio).format('HH:mm')}
                   onChange={(e) =>
-                    setEvent({ ...event, horaInicio: e.target.value })
+                    setEvent({
+                      ...event,
+                      horaInicio: moment(e.target.value, 'HH:mm')
+                        .toDate()
+                        .toISOString(),
+                    })
                   }
                 />
               </div>
@@ -244,7 +342,12 @@ export default function ManageEvent() {
                   type='time'
                   value={moment(event.horaFin).format('HH:mm')}
                   onChange={(e) =>
-                    setEvent({ ...event, horaFin: e.target.value })
+                    setEvent({
+                      ...event,
+                      horaFin: moment(e.target.value, 'HH:mm')
+                        .toDate()
+                        .toISOString(),
+                    })
                   }
                 />
               </div>
@@ -254,6 +357,7 @@ export default function ManageEvent() {
                 </label>
                 <textarea
                   id='descripcion'
+                  {...register('descripcion', registerOptions.descripcion)}
                   className='form-control'
                   name='descripcion'
                   placeholder='Descripción...'
@@ -262,38 +366,16 @@ export default function ManageEvent() {
                     setEvent({ ...event, descripcion: e.target.value })
                   }
                 />
+                <small className='text-danger'>
+                  {errors.descripcion && errors.descripcion.message}
+                </small>
               </div>
             </div>
           </div>
           <button
             type='submit'
             className={`btn btn-${id ? 'warning' : 'success'} btn-block`}
-            onClick={(e) => {
-              e.preventDefault();
-              if (id) {
-                axios
-                  .put(`${url}/events/${id}?uid=${authUser}`, event)
-                  .then((response) => {
-                    setEvent(response.data.event);
-                    history.push('/events');
-                  })
-                  .catch((error) => {
-                    setError(error.message);
-                    console.error('Ha habido un error!', error);
-                  });
-              } else {
-                axios
-                  .post(`${url}/events`, event)
-                  .then((response) => {
-                    setEvent(response.data.event);
-                    history.push('/events');
-                  })
-                  .catch((error) => {
-                    setError(error.message);
-                    console.error('Ha habido un error!', error);
-                  });
-              }
-            }}
+            onClick={handleSubmit(onFormSubmit, onErrors)}
           >
             {id && event.id ? 'Editar' : 'Crear'}
           </button>
