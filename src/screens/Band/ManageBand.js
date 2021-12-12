@@ -9,6 +9,7 @@ import * as genres_es from '../../assets/data/genres_es.json';
 import * as instruments_es from '../../assets/data/instruments_es.json';
 import { Add, Location } from 'react-ionicons';
 import GoogleMapReact from 'google-map-react';
+import { useForm } from 'react-hook-form';
 
 export default function ManageBand() {
   const url = Global.url;
@@ -146,6 +147,67 @@ export default function ManageBand() {
     }
   };
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: 'onBlur' });
+
+  const onFormSubmit = async () => {
+    try {
+      if (id) {
+        axios
+          .put(`${url}/bands/${id}?uid=${authUser}`, band)
+          .then((response) => {
+            setBand(response.data.band);
+            history.push('/bands');
+          })
+          .catch((error) => {
+            setError(error.message);
+            console.error('Ha habido un error!', error);
+          });
+      } else {
+        axios
+          .post(`${url}/bands`, band)
+          .then((response) => {
+            setBand(response.data.band);
+            history.push('/bands');
+          })
+          .catch((error) => {
+            setError(error.message);
+            console.error('Ha habido un error!', error);
+          });
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const onErrors = (errors) => setError(errors.message);
+
+  const registerOptions = {
+    nombre: {
+      required: 'Nombre es obligatorio',
+      maxLength: {
+        value: 30,
+        message: 'Nombre debe tener como máximo 30 caracteres',
+      },
+    },
+    ciudad: {
+      required: 'Ciudad es obligatoria',
+      maxLength: {
+        value: 30,
+        message: 'Ciudad debe tener como máximo 30 caracteres',
+      },
+    },
+    descripcion: {
+      maxLength: {
+        value: 150,
+        message: 'Descripción debe tener como máximo 150 caracteres',
+      },
+    },
+  };
+
   return (
     <div className='container'>
       <div className='row justify-content-center mb-3'>
@@ -154,7 +216,7 @@ export default function ManageBand() {
         </div>
       </div>
       {band && (
-        <form onSubmit={() => {}}>
+        <form onSubmit={handleSubmit(onFormSubmit, onErrors)}>
           <div className='row'>
             <div className='col'>
               <div className='form-group'>
@@ -168,7 +230,6 @@ export default function ManageBand() {
                   onChange={(e) =>
                     setBand({ ...band, usuario: e.target.value })
                   }
-                  required
                   value={band.usuario}
                 >
                   {users.map((opt, index) => (
@@ -187,7 +248,6 @@ export default function ManageBand() {
                   className='form-control'
                   aria-label='nivel'
                   onChange={(e) => setBand({ ...band, nivel: e.target.value })}
-                  required
                   value={band.nivel}
                 >
                   <option value='principiante'>Principiante</option>
@@ -323,6 +383,7 @@ export default function ManageBand() {
                 </label>
                 <input
                   id='nombre'
+                  {...register('nombre', registerOptions.nombre)}
                   className='form-control'
                   name='nombre'
                   placeholder='Nombre de la banda...'
@@ -330,6 +391,9 @@ export default function ManageBand() {
                   value={band.nombre ?? ''}
                   onChange={(e) => setBand({ ...band, nombre: e.target.value })}
                 />
+                <small className='text-danger'>
+                  {errors.nombre && errors.nombre.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='ciudad' className=''>
@@ -337,6 +401,7 @@ export default function ManageBand() {
                 </label>
                 <input
                   id='ciudad'
+                  {...register('ciudad', registerOptions.ciudad)}
                   className='form-control'
                   name='ciudad'
                   placeholder='Ciudad, País'
@@ -344,6 +409,9 @@ export default function ManageBand() {
                   value={band.ciudad ?? ''}
                   onChange={(e) => setBand({ ...band, ciudad: e.target.value })}
                 />
+                <small className='text-danger'>
+                  {errors.ciudad && errors.ciudad.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='descripcion' className=''>
@@ -351,6 +419,7 @@ export default function ManageBand() {
                 </label>
                 <textarea
                   id='descripcion'
+                  {...register('descripcion', registerOptions.descripcion)}
                   className='form-control'
                   name='descripcion'
                   placeholder='Descripción...'
@@ -359,6 +428,9 @@ export default function ManageBand() {
                     setBand({ ...band, descripcion: e.target.value })
                   }
                 />
+                <small className='text-danger'>
+                  {errors.descripcion && errors.descripcion.message}
+                </small>
               </div>
               {id && (
                 <>
@@ -377,6 +449,7 @@ export default function ManageBand() {
                       onChange={(e) =>
                         setBand({ ...band, actuaciones: e.target.value })
                       }
+                      disabled
                     />
                   </div>
                   <div className='form-group'>
@@ -394,6 +467,7 @@ export default function ManageBand() {
                       onChange={(e) =>
                         setBand({ ...band, fans: e.target.value })
                       }
+                      disabled
                     />
                   </div>
                   <div className='form-group'>
@@ -413,6 +487,7 @@ export default function ManageBand() {
                       onChange={(e) =>
                         setBand({ ...band, valoracion: e.target.value })
                       }
+                      disabled
                     />
                   </div>
                 </>
@@ -518,32 +593,7 @@ export default function ManageBand() {
           <button
             type='submit'
             className={`btn btn-${id ? 'warning' : 'success'} btn-block`}
-            onClick={(e) => {
-              e.preventDefault();
-              if (id) {
-                axios
-                  .put(`${url}/bands/${id}?uid=${authUser}`, band)
-                  .then((response) => {
-                    setBand(response.data.band);
-                    history.push('/bands');
-                  })
-                  .catch((error) => {
-                    setError(error.message);
-                    console.error('Ha habido un error!', error);
-                  });
-              } else {
-                axios
-                  .post(`${url}/bands`, band)
-                  .then((response) => {
-                    setBand(response.data.band);
-                    history.push('/bands');
-                  })
-                  .catch((error) => {
-                    setError(error.message);
-                    console.error('Ha habido un error!', error);
-                  });
-              }
-            }}
+            onClick={handleSubmit(onFormSubmit, onErrors)}
           >
             {id && band.id ? 'Editar' : 'Crear'}
           </button>

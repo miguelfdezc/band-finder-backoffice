@@ -4,6 +4,7 @@ import Global from '../../Global';
 import axios from 'axios';
 import { useParams } from 'react-router';
 import { useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
 
 export default function ManageMusician() {
   const url = Global.url;
@@ -13,7 +14,111 @@ export default function ManageMusician() {
   const [musician, setMusician] = useState({});
   const [error, setError] = useState('');
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: 'onBlur' });
+
   const { id } = useParams();
+
+  const onFormSubmit = async () => {
+    try {
+      if (id) {
+        axios
+          .put(`${url}/users/${id}?uid=${authUser}`, musician)
+          .then((response) => {
+            setMusician(response.data.user);
+          })
+          .catch((error) => {
+            setError(error.message);
+            console.error('Ha habido un error!', error);
+          });
+      } else {
+        axios
+          .post(`${url}/users/musicos`, musician)
+          .then((response) => {
+            setMusician(response.data.user);
+          })
+          .catch((error) => {
+            setError(error.message);
+            console.error('Ha habido un error!', error);
+          });
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const onErrors = (errors) => setError(errors.message);
+
+  const registerOptionsEdit = {
+    email: {
+      required: 'Email es obligatorio',
+      pattern: {
+        value:
+          /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
+        message: 'Email debe ser válido',
+      },
+    },
+    password: {
+      required: 'Contraseña es obligatoria',
+      minLength: {
+        value: 8,
+        message: 'Contraseña debe tener al menos 8 caracteres',
+      },
+    },
+    phone: {
+      pattern: {
+        value: /([+(\d]{1})(([\d+() -.]){5,16})([+(\d]{1})/gm,
+        message: 'Teléfono debe ser válido',
+      },
+    },
+    descripcion: {
+      maxLength: {
+        value: 150,
+        message: 'Descripción debe tener como máximo 150 caracteres',
+      },
+    },
+    displayName: {
+      maxLength: {
+        value: 20,
+        message: 'Nombre debe tener como máximo 20 caracteres',
+      },
+    },
+    usuario: {
+      required: 'Usuario es obligatorio',
+      maxLength: {
+        value: 10,
+        message: 'Usuario debe tener como máximo 10 caracteres',
+      },
+    },
+  };
+
+  const registerOptionsCreate = {
+    email: {
+      required: 'Email es obligatorio',
+      pattern: {
+        value:
+          /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
+        message: 'Email debe ser válido',
+      },
+    },
+    password: {
+      required: 'Contraseña es obligatoria',
+      minLength: {
+        value: 8,
+        message: 'Contraseña debe tener al menos 8 caracteres',
+      },
+    },
+    usuario: {
+      required: 'Usuario es obligatorio',
+      maxLength: {
+        value: 10,
+        message: 'Usuario debe tener como máximo 10 caracteres',
+      },
+    },
+  };
 
   useEffect(() => {
     if (id) {
@@ -52,7 +157,6 @@ export default function ManageMusician() {
                 setMusician({ ...musician, imagenFondo: url });
             })
             .catch((e) => setError(e));
-          // document.getElementById('file').value = null;
         }
       );
     }
@@ -66,7 +170,7 @@ export default function ManageMusician() {
         </div>
       </div>
       {id && musician.uid ? (
-        <form onSubmit={() => {}}>
+        <form onSubmit={handleSubmit(onFormSubmit, onErrors)}>
           <div className='row'>
             <div className='col'>
               <div className='form-group'>
@@ -89,6 +193,7 @@ export default function ManageMusician() {
                 </label>
                 <input
                   id='email'
+                  {...register('email', registerOptionsEdit.email)}
                   className='form-control'
                   name='email'
                   placeholder='usuario@email.com'
@@ -97,13 +202,16 @@ export default function ManageMusician() {
                   onChange={(e) =>
                     setMusician({ ...musician, email: e.target.value })
                   }
-                  required
                 />
+                <small className='text-danger'>
+                  {errors.email && errors.email.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='password'>Contraseña</label>
                 <input
                   id='password'
+                  {...register('password', registerOptionsEdit.password)}
                   className='form-control'
                   name='password'
                   placeholder='********'
@@ -112,8 +220,10 @@ export default function ManageMusician() {
                   onChange={(e) =>
                     setMusician({ ...musician, password: e.target.value })
                   }
-                  required
                 />
+                <small className='text-danger'>
+                  {errors.password && errors.password.message}
+                </small>
               </div>
               <div className='row'>
                 <div className='col'>
@@ -233,6 +343,7 @@ export default function ManageMusician() {
                 </label>
                 <input
                   id='usuario'
+                  {...register('usuario', registerOptionsEdit.usuario)}
                   className='form-control'
                   name='usuario'
                   placeholder='usuario'
@@ -241,8 +352,10 @@ export default function ManageMusician() {
                   onChange={(e) =>
                     setMusician({ ...musician, usuario: e.target.value })
                   }
-                  required
                 />
+                <small className='text-danger'>
+                  {errors.usuario && errors.usuario.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='displayName' className=''>
@@ -250,6 +363,7 @@ export default function ManageMusician() {
                 </label>
                 <input
                   id='displayName'
+                  {...register('displayName', registerOptionsEdit.displayName)}
                   className='form-control'
                   name='displayName'
                   placeholder='John Doe'
@@ -258,8 +372,10 @@ export default function ManageMusician() {
                   onChange={(e) =>
                     setMusician({ ...musician, displayName: e.target.value })
                   }
-                  required
                 />
+                <small className='text-danger'>
+                  {errors.displayName && errors.displayName.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='phone' className=''>
@@ -267,6 +383,7 @@ export default function ManageMusician() {
                 </label>
                 <input
                   id='phone'
+                  {...register('phone', registerOptionsEdit.phone)}
                   className='form-control'
                   name='phone'
                   placeholder='+34 123 456 789'
@@ -275,8 +392,10 @@ export default function ManageMusician() {
                   onChange={(e) =>
                     setMusician({ ...musician, phoneNumber: e.target.value })
                   }
-                  required
                 />
+                <small className='text-danger'>
+                  {errors.phone && errors.phone.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='descripcion' className=''>
@@ -284,6 +403,7 @@ export default function ManageMusician() {
                 </label>
                 <textarea
                   id='descripcion'
+                  {...register('descripcion', registerOptionsEdit.descripcion)}
                   className='form-control'
                   name='descripcion'
                   placeholder='Descripción...'
@@ -292,6 +412,9 @@ export default function ManageMusician() {
                     setMusician({ ...musician, descripcion: e.target.value })
                   }
                 />
+                <small className='text-danger'>
+                  {errors.descripcion && errors.descripcion.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='valoracion' className=''>
@@ -307,10 +430,7 @@ export default function ManageMusician() {
                   max={5}
                   step='0.1'
                   value={musician.valoracion ?? 0.0}
-                  onChange={(e) =>
-                    setMusician({ ...musician, valoracion: e.target.value })
-                  }
-                  required
+                  disabled
                 />
               </div>
               <div className='form-group'>
@@ -325,10 +445,7 @@ export default function ManageMusician() {
                   type='number'
                   min={0}
                   value={musician.actuaciones ?? 0}
-                  onChange={(e) =>
-                    setMusician({ ...musician, actuaciones: e.target.value })
-                  }
-                  required
+                  disabled
                 />
               </div>
               <div className='form-group'>
@@ -343,10 +460,7 @@ export default function ManageMusician() {
                   type='number'
                   min={0}
                   value={musician.fans ?? 0}
-                  onChange={(e) =>
-                    setMusician({ ...musician, fans: e.target.value })
-                  }
-                  required
+                  disabled
                 />
               </div>
             </div>
@@ -354,23 +468,13 @@ export default function ManageMusician() {
           <button
             type='submit'
             className={`btn btn-${id ? 'warning' : 'success'} btn-block`}
-            onClick={() => {
-              axios
-                .put(`${url}/users/${id}?uid=${authUser}`, musician)
-                .then((response) => {
-                  setMusician(response.data.user);
-                })
-                .catch((error) => {
-                  setError(error.message);
-                  console.error('Ha habido un error!', error);
-                });
-            }}
+            onClick={handleSubmit(onFormSubmit, onErrors)}
           >
             Editar
           </button>
         </form>
       ) : (
-        <form onSubmit={() => {}}>
+        <form onSubmit={handleSubmit(onFormSubmit, onErrors)}>
           <div className='row'>
             <div className='col'>
               <div className='form-group'>
@@ -379,6 +483,7 @@ export default function ManageMusician() {
                 </label>
                 <input
                   id='email'
+                  {...register('email', registerOptionsCreate.email)}
                   className='form-control'
                   name='email'
                   placeholder='usuario@email.com'
@@ -387,13 +492,16 @@ export default function ManageMusician() {
                   onChange={(e) =>
                     setMusician({ ...musician, email: e.target.value })
                   }
-                  required
                 />
+                <small className='text-danger'>
+                  {errors.email && errors.email.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='password'>Contraseña</label>
                 <input
                   id='password'
+                  {...register('password', registerOptionsCreate.password)}
                   className='form-control'
                   name='password'
                   placeholder='********'
@@ -402,8 +510,10 @@ export default function ManageMusician() {
                   onChange={(e) =>
                     setMusician({ ...musician, password: e.target.value })
                   }
-                  required
                 />
+                <small className='text-danger'>
+                  {errors.password && errors.password.message}
+                </small>
               </div>
               <div className='form-group'>
                 <label htmlFor='usuario' className=''>
@@ -411,6 +521,7 @@ export default function ManageMusician() {
                 </label>
                 <input
                   id='usuario'
+                  {...register('usuario', registerOptionsCreate.usuario)}
                   className='form-control'
                   name='usuario'
                   placeholder='usuario'
@@ -419,25 +530,17 @@ export default function ManageMusician() {
                   onChange={(e) =>
                     setMusician({ ...musician, usuario: e.target.value })
                   }
-                  required
                 />
+                <small className='text-danger'>
+                  {errors.usuario && errors.usuario.message}
+                </small>
               </div>
             </div>
           </div>
           <button
             type='submit'
             className={`btn btn-${id ? 'warning' : 'success'} btn-block`}
-            onClick={() => {
-              axios
-                .post(`${url}/users/musicos`, musician)
-                .then((response) => {
-                  setMusician(response.data.user);
-                })
-                .catch((error) => {
-                  setError(error.message);
-                  console.error('Ha habido un error!', error);
-                });
-            }}
+            onClick={handleSubmit(onFormSubmit, onErrors)}
           >
             Crear
           </button>
