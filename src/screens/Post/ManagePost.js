@@ -4,6 +4,7 @@ import Global from '../../Global';
 import axios from 'axios';
 import { useHistory, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
 
 export default function ManagePost() {
   const url = Global.url;
@@ -17,6 +18,53 @@ export default function ManagePost() {
   const [error, setError] = useState('');
 
   const { id } = useParams();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: 'onBlur' });
+
+  const onFormSubmit = async () => {
+    try {
+      if (id) {
+        axios
+          .put(`${url}/posts/${id}?uid=${authUser}`, post)
+          .then((response) => {
+            setPost(response.data.post);
+            history.push('/posts');
+          })
+          .catch((error) => {
+            setError(error.message);
+            console.error('Ha habido un error!', error);
+          });
+      } else {
+        axios
+          .post(`${url}/posts`, post)
+          .then((response) => {
+            setPost(response.data.post);
+            history.push('/posts');
+          })
+          .catch((error) => {
+            setError(error.message);
+            console.error('Ha habido un error!', error);
+          });
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const onErrors = (errors) => setError(errors.message);
+
+  const registerOptions = {
+    descripcion: {
+      maxLength: {
+        value: 150,
+        message: 'Descripción debe tener como máximo 150 caracteres',
+      },
+    },
+  };
 
   useEffect(() => {
     axios
@@ -87,7 +135,7 @@ export default function ManagePost() {
         </div>
       </div>
       {post && (
-        <form onSubmit={() => {}}>
+        <form onSubmit={handleSubmit(onFormSubmit, onErrors)}>
           <div className='row'>
             <div className='col'>
               <div className='form-group'>
@@ -100,7 +148,6 @@ export default function ManagePost() {
                   onChange={(e) =>
                     setPost({ ...post, usuario: e.target.value })
                   }
-                  required
                   value={post.usuario}
                 >
                   {users.map((opt, index) => (
@@ -118,6 +165,7 @@ export default function ManagePost() {
                 </label>
                 <textarea
                   id='descripcion'
+                  {...register('descripcion', registerOptions.descripcion)}
                   className='form-control'
                   name='descripcion'
                   placeholder='Descripción...'
@@ -126,6 +174,9 @@ export default function ManagePost() {
                     setPost({ ...post, descripcion: e.target.value })
                   }
                 />
+                <small className='text-danger'>
+                  {errors.descripcion && errors.descripcion.message}
+                </small>
               </div>
             </div>
             <div className='row'>
@@ -199,32 +250,7 @@ export default function ManagePost() {
           <button
             type='submit'
             className={`btn btn-${id ? 'warning' : 'success'} btn-block`}
-            onClick={(e) => {
-              e.preventDefault();
-              if (id) {
-                axios
-                  .put(`${url}/posts/${id}?uid=${authUser}`, post)
-                  .then((response) => {
-                    setPost(response.data.post);
-                    history.push('/posts');
-                  })
-                  .catch((error) => {
-                    setError(error.message);
-                    console.error('Ha habido un error!', error);
-                  });
-              } else {
-                axios
-                  .post(`${url}/posts`, post)
-                  .then((response) => {
-                    setPost(response.data.post);
-                    history.push('/posts');
-                  })
-                  .catch((error) => {
-                    setError(error.message);
-                    console.error('Ha habido un error!', error);
-                  });
-              }
-            }}
+            onClick={handleSubmit(onFormSubmit, onErrors)}
           >
             {id && post.id ? 'Editar' : 'Crear'}
           </button>
