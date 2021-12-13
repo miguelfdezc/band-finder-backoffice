@@ -69,6 +69,12 @@ export default function Router() {
         />
         <AuthRoute
           exact
+          path='/businesses/:id'
+          component={Businesses}
+          type='private'
+        />
+        <AuthRoute
+          exact
           path='/business'
           component={ManageBusiness}
           type='private'

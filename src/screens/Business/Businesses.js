@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../assets/css/musicians.css';
 // import Pagination from 'react-bootstrap/Pagination';
 import { useSelector } from 'react-redux';
+import Pagination from '../../components/Pagination';
 
 export default function Busineses() {
   let url = Global.url;
@@ -16,18 +17,58 @@ export default function Busineses() {
   const [message, setMessage] = useState('');
   const [users, setUsers] = useState([]);
 
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [businessesPerPage] = useState(10);
+
+  const [length, setLength] = useState(0);
+
   useEffect(() => {
+    setLoading(true);
+    const fetchData = async () => {
+      try {
+        const responseLength = await axios.get(`${url}/length/businesses`);
+
+        setLength(responseLength.data.length);
+
+        const responseBusinesses = await axios.get(
+          `${url}/users/collection/negocios?uid=${authUser}&offset=${
+            (currentPage - 1) * businessesPerPage
+          }&limit=${businessesPerPage}`
+        );
+        setUsers(responseBusinesses.data.users);
+
+        setLoading(false);
+      } catch (error) {
+        setMessage(error.message);
+        console.error('Ha habido un error!', error);
+        setLoading(false);
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+
+  // Change page
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    setLoading(true);
     axios
-      .get(`${url}/users/collection/negocios?uid=${authUser}`)
+      .get(
+        `${url}/users/collection/negocios?uid=${authUser}&offset=${
+          (currentPage - 1) * businessesPerPage
+        }&limit=${businessesPerPage}`
+      )
       .then((response) => {
         setUsers(response.data.users);
+        setLoading(false);
       })
       .catch((error) => {
         setMessage(error.message);
         console.error('Ha habido un error!', error);
+        setLoading(false);
       });
-    // eslint-disable-next-line
-  }, []);
+  };
 
   const deleteBusiness = (id) => {
     axios
@@ -46,8 +87,17 @@ export default function Busineses() {
       {users.length > 0 && (
         <div className='container' style={{ height: 'calc(100vh - 120px)' }}>
           <div className='row mt-3'>
-            <div className='col-11'>
+            <div className='col'>
               <h2>Listado de negocios</h2>
+            </div>
+            <div className='col'>
+              <Pagination
+                itemsPerPage={businessesPerPage}
+                totalItems={length}
+                paginate={paginate}
+                currentPage={currentPage}
+                itemName={'musicians'}
+              />
             </div>
             <div className='col-1'>
               <Link to='/business' className='btn btn-success'>
@@ -70,39 +120,49 @@ export default function Busineses() {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user, index) => (
-                    <tr key={index}>
-                      <td className='col-4'>{user.uid}</td>
-                      <td className='col-3'>
-                        <a href={`mailto:${user.email}`}>{user.email}</a>
-                      </td>
-                      <td className='col-2'>{user.usuario}</td>
-                      <td className='col-1'>
-                        <Link
-                          to={`/business/${user.uid}`}
-                          style={{ color: '#17a2b8' }}
-                        >
-                          Ver
-                        </Link>
-                      </td>
-                      <td className='col-1'>
-                        <Link
-                          to={`/business/edit/${user.uid}`}
-                          style={{ color: '#ffc107' }}
-                        >
-                          Editar
-                        </Link>
-                      </td>
-                      <td className='col-1'>
-                        <span
-                          className='text-danger'
-                          onClick={() => deleteBusiness(user.uid)}
-                        >
-                          Eliminar
-                        </span>
+                  {loading ? (
+                    <tr>
+                      <td colSpan='4' className='center'>
+                        Cargando negocios...
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    <>
+                      {users.map((user, index) => (
+                        <tr key={index}>
+                          <td className='col-4'>{user.uid}</td>
+                          <td className='col-3'>
+                            <a href={`mailto:${user.email}`}>{user.email}</a>
+                          </td>
+                          <td className='col-2'>{user.usuario}</td>
+                          <td className='col-1'>
+                            <Link
+                              to={`/business/${user.uid}`}
+                              style={{ color: '#17a2b8' }}
+                            >
+                              Ver
+                            </Link>
+                          </td>
+                          <td className='col-1'>
+                            <Link
+                              to={`/business/edit/${user.uid}`}
+                              style={{ color: '#ffc107' }}
+                            >
+                              Editar
+                            </Link>
+                          </td>
+                          <td className='col-1'>
+                            <span
+                              className='text-danger'
+                              onClick={() => deleteBusiness(user.uid)}
+                            >
+                              Eliminar
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  )}
                 </tbody>
               </table>
             </div>
