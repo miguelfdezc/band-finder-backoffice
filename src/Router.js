@@ -33,6 +33,18 @@ export default function Router() {
         <AuthRoute exact path='/' component={Musicians} type='private' />
         <AuthRoute
           exact
+          path='/musicians'
+          component={Musicians}
+          type='private'
+        />
+        <AuthRoute
+          exact
+          path='/musicians/:id'
+          component={Musicians}
+          type='private'
+        />
+        <AuthRoute
+          exact
           path='/musician'
           component={ManageMusician}
           type='private'
