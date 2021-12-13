@@ -33,6 +33,18 @@ export default function Router() {
         <AuthRoute exact path='/' component={Musicians} type='private' />
         <AuthRoute
           exact
+          path='/musicians'
+          component={Musicians}
+          type='private'
+        />
+        <AuthRoute
+          exact
+          path='/musicians/:id'
+          component={Musicians}
+          type='private'
+        />
+        <AuthRoute
+          exact
           path='/musician'
           component={ManageMusician}
           type='private'
@@ -52,6 +64,12 @@ export default function Router() {
         <AuthRoute
           exact
           path='/businesses'
+          component={Businesses}
+          type='private'
+        />
+        <AuthRoute
+          exact
+          path='/businesses/:id'
           component={Businesses}
           type='private'
         />
@@ -92,6 +110,7 @@ export default function Router() {
           type='private'
         />
         <AuthRoute exact path='/bands' component={Bands} type='private' />
+        <AuthRoute exact path='/bands/:id' component={Bands} type='private' />
         <AuthRoute exact path='/band' component={ManageBand} type='private' />
         <AuthRoute exact path='/band/:id' component={Band} type='private' />
         <AuthRoute
