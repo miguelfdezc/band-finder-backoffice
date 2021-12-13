@@ -92,6 +92,7 @@ export default function Router() {
           type='private'
         />
         <AuthRoute exact path='/bands' component={Bands} type='private' />
+        <AuthRoute exact path='/bands/:id' component={Bands} type='private' />
         <AuthRoute exact path='/band' component={ManageBand} type='private' />
         <AuthRoute exact path='/band/:id' component={Band} type='private' />
         <AuthRoute
