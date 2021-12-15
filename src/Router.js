@@ -92,6 +92,7 @@ export default function Router() {
           type='private'
         />
         <AuthRoute exact path='/posts' component={Posts} type='private' />
+        <AuthRoute exact path='/posts/:id' component={Posts} type='private' />
         <AuthRoute exact path='/post' component={ManagePost} type='private' />
         <AuthRoute exact path='/post/:id' component={Post} type='private' />
         <AuthRoute
@@ -101,6 +102,7 @@ export default function Router() {
           type='private'
         />
         <AuthRoute exact path='/events' component={Events} type='private' />
+        <AuthRoute exact path='/events/:id' component={Events} type='private' />
         <AuthRoute exact path='/event' component={ManageEvent} type='private' />
         <AuthRoute exact path='/event/:id' component={Event} type='private' />
         <AuthRoute
