@@ -152,7 +152,7 @@ export default function ManagePost() {
                 >
                   {users.map((opt, index) => (
                     <option key={index} value={opt.uid}>
-                      {opt.uid}
+                      {opt.uid} - {opt.email}
                     </option>
                   ))}
                 </select>
