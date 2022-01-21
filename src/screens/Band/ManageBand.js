@@ -136,7 +136,8 @@ export default function ManageBand() {
           uploadTask.snapshot.ref
             .getDownloadURL()
             .then((url) => {
-              if (type === 'imagenPerfil') setBand({ ...band, photoURL: url });
+              if (type === 'imagenPerfil')
+                setBand({ ...band, imagenPerfil: url });
               else if (type === 'imagenFondo')
                 setBand({ ...band, imagenFondo: url });
             })

@@ -151,8 +151,8 @@ export default function ManageBusiness() {
           uploadTask.snapshot.ref
             .getDownloadURL()
             .then((url) => {
-              if (type === 'photoURL')
-                setBusiness({ ...business, photoURL: url });
+              if (type === 'imagenPerfil')
+                setBusiness({ ...business, imagenPerfil: url });
               else if (type === 'imagenFondo')
                 setBusiness({ ...business, imagenFondo: url });
             })
@@ -287,14 +287,14 @@ export default function ManageBusiness() {
                 </div>
               </div>
               <div className='form-group'>
-                <label htmlFor='photoURL' className=''>
+                <label htmlFor='imagenPerfil' className=''>
                   Imagen Perfil
                 </label>
                 <br />
                 <div className='row'>
                   <div className='col'>
                     <img
-                      src={business.photoURL}
+                      src={business.imagenPerfil}
                       style={{ height: '100px', width: '100px' }}
                       alt='Imagen Perfil'
                     />
@@ -302,10 +302,10 @@ export default function ManageBusiness() {
                   <div className='col align-self-center'>
                     <input
                       type='file'
-                      id='photoURL'
+                      id='imagenPerfil'
                       onChange={(e) => {
                         e.preventDefault();
-                        handleChange(e, 'photoURL');
+                        handleChange(e, 'imagenPerfil');
                       }}
                     />
                   </div>

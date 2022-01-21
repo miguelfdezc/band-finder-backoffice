@@ -81,10 +81,14 @@ export default function Musician() {
                   <tr>
                     <th>Verificado</th>
                     <td>{user.emailVerified ? 'Sí' : 'No'}</td>
-                    <th>PhotoURL</th>
+                    <th>Imagen Perfil</th>
                     <td>
-                      <a href={user.photoURL} target='_blank' rel='noreferrer'>
-                        {user.photoURL}
+                      <a
+                        href={user.imagenPerfil}
+                        target='_blank'
+                        rel='noreferrer'
+                      >
+                        {user.imagenPerfil}
                       </a>
                     </td>
                   </tr>

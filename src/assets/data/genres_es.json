@@ -15,7 +15,7 @@
     { "title": "Metal", "key": "metal" },
     { "title": "Electrónica", "key": "electronic" },
     { "title": "Funk", "key": "funk" },
-    { "title": "No Musical", "key": "non-musical" },
+    { "title": "No Musical", "key": "non-music" },
     { "title": "Hip Hop", "key": "hip-hop" },
     { "title": "Country", "key": "country" }
   ]

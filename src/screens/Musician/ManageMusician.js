@@ -151,8 +151,8 @@ export default function ManageMusician() {
           uploadTask.snapshot.ref
             .getDownloadURL()
             .then((url) => {
-              if (type === 'photoURL')
-                setMusician({ ...musician, photoURL: url });
+              if (type === 'imagenPerfil')
+                setMusician({ ...musician, imagenPerfil: url });
               else if (type === 'imagenFondo')
                 setMusician({ ...musician, imagenFondo: url });
             })
@@ -286,14 +286,14 @@ export default function ManageMusician() {
                 </div>
               </div>
               <div className='form-group'>
-                <label htmlFor='photoURL' className=''>
+                <label htmlFor='imagenPerfil' className=''>
                   Imagen Perfil
                 </label>
                 <br />
                 <div className='row'>
                   <div className='col'>
                     <img
-                      src={musician.photoURL}
+                      src={musician.imagenPerfil}
                       style={{ height: '100px', width: '100px' }}
                       alt='Imagen Perfil'
                     />
@@ -301,10 +301,10 @@ export default function ManageMusician() {
                   <div className='col align-self-center'>
                     <input
                       type='file'
-                      id='photoURL'
+                      id='imagenPerfil'
                       onChange={(e) => {
                         e.preventDefault();
-                        handleChange(e, 'photoURL');
+                        handleChange(e, 'imagenPerfil');
                       }}
                     />
                   </div>
